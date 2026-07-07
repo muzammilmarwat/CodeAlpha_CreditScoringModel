@@ -43,6 +43,15 @@ SAVINGS_ACCOUNT_ORDER: Sequence[str] = (
     "A65",
 )
 
+# Age groups are ordered from younger to older, reflecting a natural progression
+# in the underlying demographic segments.
+AGE_GROUP_ORDER: Sequence[str] = (
+    "young",
+    "adult",
+    "middle_aged",
+    "senior",
+)
+
 
 def build_ordinal_encoder() -> OrdinalEncoder:
     """Create an ordinal encoder with explicit categories for ordinal features.
@@ -55,6 +64,7 @@ def build_ordinal_encoder() -> OrdinalEncoder:
         list(CHECKING_ACCOUNT_STATUS_ORDER),
         list(EMPLOYMENT_DURATION_ORDER),
         list(SAVINGS_ACCOUNT_ORDER),
+        list(AGE_GROUP_ORDER),
     ]
 
     logger.info("Configured ordinal encoder with explicit category ordering.")

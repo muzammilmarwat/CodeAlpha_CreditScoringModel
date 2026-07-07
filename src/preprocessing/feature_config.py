@@ -52,6 +52,30 @@ NOMINAL_FEATURES = (
     "foreign_worker",  # Binary worker status with no ranking semantics.
 )
 
+# Engineered numerical features are derived from the original financial fields.
+# They are kept numeric because they represent quantities or binary signals that
+# can be consumed directly by most models.
+ENGINEERED_NUMERICAL_FEATURES = (
+    "credit_amount_per_month",  # Credit amount normalized by loan duration.
+    "high_credit_amount_flag",  # Binary indicator for large-loan applicants.
+    "long_duration_flag",  # Binary indicator for longer-term credits.
+    "credit_duration_interaction",  # Interaction term between amount and duration.
+)
+
+# The age-group feature is treated as ordinal because the bins are naturally
+# ordered from younger to older. This preserves the meaningful progression
+# while still keeping the encoding explicit and reusable.
+ENGINEERED_CATEGORICAL_FEATURES = (
+    "age_group",
+)
+
+ALL_NUMERICAL_FEATURES = tuple(NUMERICAL_FEATURES) + tuple(ENGINEERED_NUMERICAL_FEATURES)
+ALL_ORDINAL_FEATURES = tuple(ORDINAL_FEATURES) + tuple(ENGINEERED_CATEGORICAL_FEATURES)
+ALL_NOMINAL_FEATURES = tuple(NOMINAL_FEATURES)
+ALL_PREDICTOR_FEATURES = (
+    tuple(ALL_NUMERICAL_FEATURES) + tuple(ALL_ORDINAL_FEATURES) + tuple(ALL_NOMINAL_FEATURES)
+)
+
 
 def get_feature_summary() -> dict[str, Any]:
     """Return a summary of the canonical feature configuration.
@@ -65,7 +89,13 @@ def get_feature_summary() -> dict[str, Any]:
         "numerical_features": list(NUMERICAL_FEATURES),
         "ordinal_features": list(ORDINAL_FEATURES),
         "nominal_features": list(NOMINAL_FEATURES),
-        "total_predictors": len(NUMERICAL_FEATURES) + len(ORDINAL_FEATURES) + len(NOMINAL_FEATURES),
+        "engineered_numerical_features": list(ENGINEERED_NUMERICAL_FEATURES),
+        "engineered_categorical_features": list(ENGINEERED_CATEGORICAL_FEATURES),
+        "all_numerical_features": list(ALL_NUMERICAL_FEATURES),
+        "all_ordinal_features": list(ALL_ORDINAL_FEATURES),
+        "all_nominal_features": list(ALL_NOMINAL_FEATURES),
+        "all_predictor_features": list(ALL_PREDICTOR_FEATURES),
+        "total_predictors": len(ALL_PREDICTOR_FEATURES),
     }
 
 
@@ -89,21 +119,27 @@ def validate_feature_lists(columns: Iterable[str]) -> None:
     if TARGET_COLUMN not in column_set:
         raise ValueError(f"Target column '{TARGET_COLUMN}' is missing from the dataset schema.")
 
-    predictor_names = list(NUMERICAL_FEATURES) + list(ORDINAL_FEATURES) + list(NOMINAL_FEATURES)
-    predictor_set = set(predictor_names)
+    raw_predictor_names = list(NUMERICAL_FEATURES) + list(ORDINAL_FEATURES) + list(NOMINAL_FEATURES)
+    raw_predictor_set = set(raw_predictor_names)
+    engineered_predictor_names = list(ALL_PREDICTOR_FEATURES)
+    engineered_predictor_set = set(engineered_predictor_names)
 
-    if TARGET_COLUMN in predictor_set:
+    if TARGET_COLUMN in raw_predictor_set or TARGET_COLUMN in engineered_predictor_set:
         raise ValueError("The target column must not appear in predictor feature lists.")
 
-    if len(predictor_names) != len(set(predictor_names)):
+    if len(raw_predictor_names) != len(set(raw_predictor_names)):
         raise ValueError("Feature lists contain duplicates. Each predictor should appear once.")
 
+    if len(engineered_predictor_names) != len(set(engineered_predictor_names)):
+        raise ValueError("Engineered feature lists contain duplicates. Each predictor should appear once.")
+
     expected_predictors = column_set - {TARGET_COLUMN}
-    if predictor_set != expected_predictors:
+    if expected_predictors != raw_predictor_set and expected_predictors != engineered_predictor_set:
         raise ValueError(
             "Feature groups do not exactly match the dataset schema. "
             f"Expected predictors: {sorted(expected_predictors)}, "
-            f"Configured predictors: {sorted(predictor_set)}"
+            f"Configured raw predictors: {sorted(raw_predictor_set)}, "
+            f"Configured engineered predictors: {sorted(engineered_predictor_set)}"
         )
 
     logger.info("Feature configuration validated successfully for %d columns.", len(column_list))

@@ -8,15 +8,13 @@ The builders intentionally do not fit, transform, split, or train anything.
 from __future__ import annotations
 
 import logging
-from typing import Any
 
-import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, OrdinalEncoder
+from sklearn.preprocessing import OneHotEncoder
 
 from .encoders import build_ordinal_encoder
-from .feature_config import NOMINAL_FEATURES, NUMERICAL_FEATURES, ORDINAL_FEATURES, TARGET_COLUMN
+from .feature_config import ALL_NOMINAL_FEATURES, ALL_NUMERICAL_FEATURES, ALL_ORDINAL_FEATURES
 from .scaler import build_standard_scaler
 
 logger = logging.getLogger(__name__)
@@ -50,9 +48,9 @@ def build_scaled_preprocessor() -> Pipeline:
 
     preprocessor = ColumnTransformer(
         transformers=[
-            ("numeric", numeric_transformer, list(NUMERICAL_FEATURES)),
-            ("ordinal", build_ordinal_encoder(), list(ORDINAL_FEATURES)),
-            ("nominal", OneHotEncoder(handle_unknown="ignore"), list(NOMINAL_FEATURES)),
+            ("numeric", numeric_transformer, list(ALL_NUMERICAL_FEATURES)),
+            ("ordinal", build_ordinal_encoder(), list(ALL_ORDINAL_FEATURES)),
+            ("nominal", OneHotEncoder(handle_unknown="ignore"), list(ALL_NOMINAL_FEATURES)),
         ],
         remainder="drop",
     )
@@ -78,9 +76,9 @@ def build_tree_preprocessor() -> Pipeline:
 
     preprocessor = ColumnTransformer(
         transformers=[
-            ("numeric", "passthrough", list(NUMERICAL_FEATURES)),
-            ("ordinal", build_ordinal_encoder(), list(ORDINAL_FEATURES)),
-            ("nominal", OneHotEncoder(handle_unknown="ignore"), list(NOMINAL_FEATURES)),
+            ("numeric", "passthrough", list(ALL_NUMERICAL_FEATURES)),
+            ("ordinal", build_ordinal_encoder(), list(ALL_ORDINAL_FEATURES)),
+            ("nominal", OneHotEncoder(handle_unknown="ignore"), list(ALL_NOMINAL_FEATURES)),
         ],
         remainder="drop",
     )

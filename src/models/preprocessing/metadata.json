@@ -1,0 +1,39 @@
+{
+  "created_at": "2026-07-07T19:31:33.705706+00:00",
+  "train_rows": 800,
+  "test_rows": 200,
+  "number_of_features": 25,
+  "target_mapping": {
+    "good": 1,
+    "bad": 0
+  },
+  "engineered_features": [
+    "checking_account_status",
+    "duration_months",
+    "credit_history",
+    "purpose",
+    "credit_amount",
+    "savings_account",
+    "employment_duration",
+    "installment_rate",
+    "personal_status_sex",
+    "other_debtors",
+    "present_residence_years",
+    "property",
+    "age",
+    "other_installment_plans",
+    "housing",
+    "existing_credits",
+    "job",
+    "people_liable",
+    "telephone",
+    "foreign_worker",
+    "credit_amount_per_month",
+    "high_credit_amount_flag",
+    "long_duration_flag",
+    "age_group",
+    "credit_duration_interaction"
+  ],
+  "random_state": 42,
+  "test_size": 0.2
+}
