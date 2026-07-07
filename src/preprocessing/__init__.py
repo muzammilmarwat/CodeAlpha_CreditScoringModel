@@ -9,7 +9,12 @@ from .feature_config import (
     get_feature_summary,
     validate_feature_lists,
 )
-from .feature_engineering import create_engineered_features, validate_features
+from .feature_engineering import (
+    FeatureEngineer,
+    create_engineered_features,
+    get_engineered_feature_names,
+    validate_features,
+)
 from .preprocessing_pipeline import build_scaled_preprocessor, build_tree_preprocessor
 from .scaler import build_robust_scaler, build_standard_scaler
 
