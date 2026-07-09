@@ -130,11 +130,11 @@ Final screenshots are prepared through placeholder paths in `docs/screenshots/`.
 
 | View | Path | Status |
 |---|---|---|
-| Home | `docs/screenshots/home.png` | Placeholder pending |
-| Prediction Form | `docs/screenshots/prediction_form.png` | Placeholder pending |
-| Prediction Result | `docs/screenshots/prediction_result.png` | Placeholder pending |
-| Model Information | `docs/screenshots/model_information.png` | Placeholder pending |
-| About Project | `docs/screenshots/about_project.png` | Placeholder pending |
+| Home | `docs/screenshots/home.png` | Available |
+| Prediction Form | `docs/screenshots/prediction_form.png` | Available |
+| Prediction Result | `docs/screenshots/prediction_result.png` | Available |
+| Model Information | `docs/screenshots/model_information.png` | Available |
+| About Project | `docs/screenshots/about_project.png` | Available |
 
 ## Demo GIF
 
