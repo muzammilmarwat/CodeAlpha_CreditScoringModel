@@ -15,6 +15,7 @@ from app import config
 from app.services.prediction_service import predict_credit_risk
 from app.ui.components import (
     render_about_page,
+    render_footer,
     render_header,
     render_model_info,
     render_prediction_result,
@@ -45,15 +46,25 @@ def configure_page() -> None:
 def render_prediction_page() -> None:
     """Render the main prediction workflow."""
     st.header("Applicant Risk Prediction")
-    st.write("Enter one applicant profile using the same German Credit category codes used during training.")
+    st.write(
+        "Enter one applicant profile using the same German Credit category codes used during training."
+    )
+
+    col1, col2, col3 = st.columns(3)
+    col1.info("Default model: Random Forest baseline")
+    col2.info("Alternative: SVM baseline for bad-class recall")
+    col3.warning("Educational use only")
 
     submitted, input_data = render_prediction_form()
     if not submitted:
+        if "latest_prediction" in st.session_state:
+            render_prediction_result(st.session_state["latest_prediction"])
         return
 
     try:
         validate_required_artifacts()
-        prediction = predict_credit_risk(input_data, model_name=config.DEFAULT_MODEL_CHOICE)
+        with st.spinner("Generating credit risk assessment..."):
+            prediction = predict_credit_risk(input_data, model_name=config.DEFAULT_MODEL_CHOICE)
     except PredictionInputError as exc:
         st.error(f"Input validation failed: {exc}")
         return
@@ -68,6 +79,8 @@ def render_prediction_page() -> None:
         st.error(f"Unexpected application error: {exc}")
         return
 
+    st.session_state["latest_input"] = input_data
+    st.session_state["latest_prediction"] = prediction
     render_prediction_result(prediction)
 
 
@@ -83,6 +96,7 @@ def main() -> None:
         render_model_info()
     else:
         render_about_page()
+    render_footer()
 
 
 if __name__ == "__main__":

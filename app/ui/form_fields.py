@@ -138,6 +138,35 @@ SAMPLE_LOW_RISK_APPLICANT = {
     "foreign_worker": "A201",
 }
 
+SAMPLE_HIGH_RISK_APPLICANT = {
+    "checking_account_status": "A11",
+    "duration_months": 48,
+    "credit_history": "A30",
+    "purpose": "A40",
+    "credit_amount": 7500,
+    "savings_account": "A61",
+    "employment_duration": "A72",
+    "installment_rate": 4,
+    "personal_status_sex": "A92",
+    "other_debtors": "A101",
+    "present_residence_years": 1,
+    "property": "A124",
+    "age": 24,
+    "other_installment_plans": "A141",
+    "housing": "A151",
+    "existing_credits": 1,
+    "job": "A172",
+    "people_liable": 2,
+    "telephone": "A191",
+    "foreign_worker": "A201",
+}
+
+SAMPLE_APPLICANTS = {
+    "Low Risk Applicant": SAMPLE_LOW_RISK_APPLICANT,
+    "Medium Risk Applicant": SAMPLE_MEDIUM_RISK_APPLICANT,
+    "High Risk Applicant": SAMPLE_HIGH_RISK_APPLICANT,
+}
+
 
 def _label_for_code(field_name: str, code: str) -> str:
     """Return display label for a category code."""
@@ -149,10 +178,20 @@ def _code_from_label(label: str) -> str:
     return label.split(" - ", maxsplit=1)[0]
 
 
+def _session_value_for_field(field_name: str, default_code: str) -> Any:
+    """Return session-backed widget value for a field."""
+    key = f"field_{field_name}"
+    if key in st.session_state:
+        return st.session_state[key]
+    if field_name in CATEGORY_LABELS:
+        return _label_for_code(field_name, default_code)
+    return default_code
+
+
 def _select_code(field_name: str, label: str, default_code: str) -> str:
     """Render a selectbox and return the selected raw code."""
     labels = list(CATEGORY_LABELS[field_name].values())
-    default_label = _label_for_code(field_name, default_code)
+    default_label = _session_value_for_field(field_name, default_code)
     selected_label = st.selectbox(
         label,
         labels,
@@ -167,7 +206,7 @@ def _number_input(field_name: str, label: str, default_value: int, **kwargs: Any
     return int(
         st.number_input(
             label,
-            value=int(default_value),
+            value=int(_session_value_for_field(field_name, default_value)),
             step=1,
             key=f"field_{field_name}",
             **kwargs,
@@ -178,6 +217,27 @@ def _number_input(field_name: str, label: str, default_value: int, **kwargs: Any
 def get_default_applicant() -> dict[str, Any]:
     """Return the default applicant payload for the prediction form."""
     return st.session_state.get("sample_applicant", SAMPLE_MEDIUM_RISK_APPLICANT).copy()
+
+
+def apply_applicant_to_session(applicant: dict[str, Any]) -> None:
+    """Populate Streamlit widget session state from an applicant payload.
+
+    Args:
+        applicant: Valid raw applicant dictionary.
+    """
+    st.session_state["sample_applicant"] = applicant.copy()
+    for field_name, value in applicant.items():
+        if field_name in CATEGORY_LABELS:
+            st.session_state[f"field_{field_name}"] = _label_for_code(field_name, str(value))
+        else:
+            st.session_state[f"field_{field_name}"] = int(value)
+
+
+def reset_form_state() -> None:
+    """Reset the form to the default medium-risk sample."""
+    apply_applicant_to_session(SAMPLE_MEDIUM_RISK_APPLICANT)
+    st.session_state.pop("latest_prediction", None)
+    st.session_state.pop("latest_input", None)
 
 
 def render_prediction_form() -> tuple[bool, dict[str, Any]]:
