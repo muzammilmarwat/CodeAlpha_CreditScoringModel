@@ -249,7 +249,7 @@ def render_prediction_form() -> tuple[bool, dict[str, Any]]:
     defaults = get_default_applicant()
 
     with st.form("credit_risk_prediction_form"):
-        st.subheader("A. Account & Credit History")
+        st.subheader("🏦 A. Account & Credit History")
         col1, col2 = st.columns(2)
         with col1:
             checking_account_status = _select_code(
@@ -270,7 +270,7 @@ def render_prediction_form() -> tuple[bool, dict[str, Any]]:
                 defaults["employment_duration"],
             )
 
-        st.subheader("B. Loan Details")
+        st.subheader("💰 B. Loan Details")
         col1, col2 = st.columns(2)
         with col1:
             duration_months = _number_input(
@@ -297,7 +297,7 @@ def render_prediction_form() -> tuple[bool, dict[str, Any]]:
                 max_value=4,
             )
 
-        st.subheader("C. Personal & Residence Information")
+        st.subheader("👤 C. Personal & Residence Information")
         col1, col2, col3 = st.columns(3)
         with col1:
             personal_status_sex = _select_code(
@@ -319,7 +319,7 @@ def render_prediction_form() -> tuple[bool, dict[str, Any]]:
             property_value = _select_code("property", "Property", defaults["property"])
             job = _select_code("job", "Job", defaults["job"])
 
-        st.subheader("D. Additional Obligations")
+        st.subheader("📋 D. Additional Obligations")
         col1, col2, col3 = st.columns(3)
         with col1:
             other_debtors = _select_code("other_debtors", "Other debtors", defaults["other_debtors"])
@@ -347,7 +347,7 @@ def render_prediction_form() -> tuple[bool, dict[str, Any]]:
             telephone = _select_code("telephone", "Telephone", defaults["telephone"])
             foreign_worker = _select_code("foreign_worker", "Foreign worker", defaults["foreign_worker"])
 
-        submitted = st.form_submit_button("Assess Credit Risk", use_container_width=True)
+        submitted = st.form_submit_button("📈 Assess Credit Risk", use_container_width=True)
 
     input_data = {
         "checking_account_status": checking_account_status,

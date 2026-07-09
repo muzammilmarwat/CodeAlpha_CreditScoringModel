@@ -35,8 +35,8 @@ from app.utils.paths import validate_required_artifacts
 def configure_page() -> None:
     """Configure Streamlit page metadata and layout."""
     st.set_page_config(
-        page_title="Credit Risk Assessment System",
-        page_icon="CR",
+        page_title="Credit Risk Assessment System | RC-2",
+        page_icon="🏦",
         layout="wide",
         initial_sidebar_state="expanded",
     )
@@ -45,7 +45,7 @@ def configure_page() -> None:
 
 def render_prediction_page() -> None:
     """Render the main prediction workflow."""
-    st.header("Applicant Risk Prediction")
+    st.header("📈 Applicant Risk Prediction")
     st.write(
         "Enter one applicant profile using the same German Credit category codes used during training."
     )
