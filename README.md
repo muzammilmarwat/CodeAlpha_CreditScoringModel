@@ -28,6 +28,9 @@ Credit scoring is the process of evaluating an individual's creditworthiness usi
 6. Save the best model for deployment
 7. Build a simple Streamlit app for inference
 
+## Model Documentation
+- Final model card: `reports/model_card.md`
+
 ## Repository Structure
 ```text
 CodeAlpha_CreditScoringModel/
