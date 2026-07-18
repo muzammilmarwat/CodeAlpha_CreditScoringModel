@@ -136,11 +136,7 @@ Final screenshots are prepared through placeholder paths in `docs/screenshots/`.
 | Model Information | `docs/screenshots/model_information.png` | Available |
 | About Project | `docs/screenshots/about_project.png` | Available |
 
-## Demo GIF
 
-Planned demo path: `docs/screenshots/demo.gif`
-
-The GIF should show: open app → select example applicant → run prediction → view result card and probability bars.
 
 ## Documentation
 
